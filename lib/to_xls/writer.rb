@@ -65,7 +65,8 @@ module ToXls
     end
 
     def get_columns_from_first_element
-      @array.first.attributes.keys.sort_by {|sym| sym.to_s}.collect.to_a
+      excluded_columns = !@options[:excluded_columns].nil? ? @options[:excluded_columns] : []
+      @array.first.attributes.keys.sort_by {|sym| sym.to_s}.collect.to_a - excluded_columns
     end
 
     def headers

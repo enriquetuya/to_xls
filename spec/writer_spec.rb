@@ -44,6 +44,17 @@ describe ToXls::Writer do
       )
     end
 
+    it "allows excluding the columns by using the :excluded_columns option" do
+      xls = make_book(mock_users, :excluded_columns => [:email])
+      check_sheet( xls.worksheets.first,
+        [ [:age,    :name],
+          [20,    'Peter'],
+          [25,     'John'],
+          [27,     'Day9']
+        ]
+      )
+    end
+
     it "works properly when you provide it with both data and column names" do
       xls = make_book([1,2,3], :columns => [:to_s])
       check_sheet( xls.worksheets.first, [ [:to_s], ['1'], ['2'], ['3'] ] )
