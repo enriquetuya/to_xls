@@ -72,6 +72,11 @@ module ToXls
     def headers
       return  @headers if @headers
       @headers = @options[:headers] || columns
+      #Transformation needed?
+      if !@options[:header_transformer].nil? 
+        @headers = @options[:header_transformer].call @headers
+        print @headers
+      end
       raise ArgumentError, ":headers (#{@headers.inspect}) must be an array" unless @headers.is_a? Array
       @headers
     end

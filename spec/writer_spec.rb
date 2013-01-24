@@ -55,6 +55,17 @@ describe ToXls::Writer do
       )
     end
 
+    it "uses the attribute keys as columns if it exists" do
+      xls = make_book(mock_users, :header_transformer => proc{ |headers| headers.map{ |x| x.to_s.upcase }.to_a })
+      check_sheet( xls.worksheets.first,
+        [ ["AGE",  "EMAIL",           "NAME"],
+          [   20, 'peter@gmail.com', 'Peter'],
+          [   25, 'john@gmail.com',  'John'],
+          [   27, 'day9@day9tv.com', 'Day9']
+        ]
+      )
+    end
+
     it "works properly when you provide it with both data and column names" do
       xls = make_book([1,2,3], :columns => [:to_s])
       check_sheet( xls.worksheets.first, [ [:to_s], ['1'], ['2'], ['3'] ] )
