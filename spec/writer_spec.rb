@@ -72,7 +72,7 @@ describe ToXls::Writer do
     end
 
     it "picks data from associations" do
-      xls = make_book(mock_users, :columns => [:name, {:company => [:name]}])
+      xls = make_book(mock_users, :columns => [:name, {:company => [:name]}], :excluded_columns => [ :age, :email ])
       check_sheet( xls.worksheets.first,
         [ [:name,  :name],
           ['Peter', 'Acme'],
@@ -114,7 +114,7 @@ describe ToXls::Writer do
 
     it "picks data from associations" do
       book = make_book( mock_users,
-        :columns => [:name, {:company => [:name]}],
+        :columns => [:name, {:company => [:name]}], :excluded_columns => [ :age, :email ],
         :headers => [:name, :company_name]
       )
       check_sheet( book.worksheets.first,

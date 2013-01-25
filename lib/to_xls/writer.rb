@@ -52,9 +52,10 @@ module ToXls
 
     def columns
       return  @columns if @columns
-      @columns = @options[:columns]
-      raise ArgumentError.new(":columns (#{columns}) must be an array or nil") unless (@columns.nil? || @columns.is_a?(Array))
-      @columns ||=  can_get_columns_from_first_element? ? get_columns_from_first_element : []
+      user_columns = @options[:columns] || []
+      raise ArgumentError.new(":columns (#{user_columns}) must be an array or nil") unless (user_columns.nil? || user_columns.is_a?(Array))
+      model_columns = can_get_columns_from_first_element? ? get_columns_from_first_element : []
+      @columns = (user_columns + model_columns).uniq
     end
 
     def can_get_columns_from_first_element?
@@ -66,17 +67,18 @@ module ToXls
 
     def get_columns_from_first_element
       excluded_columns = @options[:excluded_columns] || []
+      raise ArgumentError.new(":columns (#{excluded_columns}) must be an array or nil") unless (excluded_columns.nil? || excluded_columns.is_a?(Array))
       @array.first.attributes.keys.sort_by {|sym| sym.to_s}.collect.to_a - excluded_columns
     end
 
     def headers
       return  @headers if @headers
       @headers = @options[:headers] || columns
+      raise ArgumentError, ":headers (#{@headers.inspect}) must be an array" unless @headers.is_a? Array
       #Transformation needed?
       if !@options[:header_transformer].nil? 
         @headers = @options[:header_transformer].call @headers
       end
-      raise ArgumentError, ":headers (#{@headers.inspect}) must be an array" unless @headers.is_a? Array
       @headers
     end
 
